@@ -23,18 +23,23 @@ Azure Policy applies additive inheritance downward: a policy assigned at a paren
 
 <img width="552" height="167" alt="Screenshot 2026-09-23 083133" src="https://github.com/user-attachments/assets/6da776ba-8c7b-4834-90dd-d00005d13425" />
 
+
 Strategic Assignment Steps
+
+
 Top-Level Baseline (Tenant Root Group):
 
 Policy: Allowed Locations restricted to approved cloud regions.
 
 Policy: Require Security Contact Email for Microsoft Defender.
 
+
 Archetype Baseline (Landing Zones MG):
 
 Policy: Require Tag and Value (e.g., CostCenter, Owner).
 
 Policy: Audit Unencrypted Storage Accounts.
+
 
 Department-Specific Rules (Engineering MG):
 
@@ -44,11 +49,20 @@ Operations Rules (Operations MG):
 
 Policy: Enforce Backup Configuration on all managed disks.
 
+
+
+
+
 Student Bottlenecks & Governance Pitfalls
+
+
 Pitfall 1: Disruptive Structural Changes Post-Assignment
+
 Once management groups have RBAC roles, Azure Policy assignments, and Defender plans attached, moving subscriptions or restructuring nodes is highly disruptive.
 
-The Problem: Moving a subscription from Finance MG to Decommissioned MG immediately removes inherited policies and access permissions, potentially leaving resources exposed or breaking operational scripts.
+The Problem:
+
+Moving a subscription from Finance MG to Decommissioned MG immediately removes inherited policies and access permissions, potentially leaving resources exposed or breaking operational scripts.
 
 Mitigation Strategy:
 
@@ -56,10 +70,16 @@ Design hierarchy by archetype and life cycle (e.g., Platform vs. Workload, Prod 
 
 Use Infrastructure as Code (IaC) (Terraform modules or Bicep) to define MG trees so changes can be planned and dry-run before deployment.
 
+
+
+
 Pitfall 2: Unexpected Effective Policy Results
+
+
 Students often expect lower-level policy assignments to overwrite parent policies. In Azure Policy, Deny rules at a parent level always win, and policy evaluations are evaluated as a logical AND.
 
 The Problem:
+
 If Tenant Root MG assigns a policy restricting VM sizes to Standard_B2s via Deny, assigning an Allowed SKUs policy at Engineering MG that includes Standard_D4s_v3 will not grant access to the D4s size. The parent Deny block blocks it.
 
 Mitigation Strategy:
